@@ -9,3 +9,6 @@ camunda:
     grpc-address: ${CAMUNDA_GRPC_ADDRESS:http://localhost:26500}
     auth:
       method: ${CAMUNDA_AUTH_METHOD:none}
+
+notification:
+  simulate-failure: ${NOTIFICATION_SIMULATE_FAILURE:false}

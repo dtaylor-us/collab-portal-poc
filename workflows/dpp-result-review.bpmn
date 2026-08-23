@@ -63,7 +63,10 @@
     <bpmn:sequenceFlow id="Flow_036q5i1" sourceRef="Event_19hwsu2" targetRef="Activity_1cqn0ie" />
     <bpmn:serviceTask id="Activity_1cqn0ie" name="Send TO review reminder">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="send-to-review-reminder" />
+        <zeebe:taskDefinition type="send-to-review-reminder" retries="3" />
+        <zeebe:properties>
+          <zeebe:property />
+        </zeebe:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_036q5i1</bpmn:incoming>
       <bpmn:outgoing>Flow_0nu3zuv</bpmn:outgoing>
@@ -95,16 +98,16 @@
       <bpmndi:BPMNShape id="Activity_13nnw87_di" bpmnElement="Activity_18oc3tj">
         <dc:Bounds x="270" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1xfhl64_di" bpmnElement="Gateway_1xfhl64" isMarkerVisible="true">
-        <dc:Bounds x="425" y="305" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="415" y="281" width="70" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1xadb2r_di" bpmnElement="Event_1xadb2r">
         <dc:Bounds x="752" y="302" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="727" y="278" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1xfhl64_di" bpmnElement="Gateway_1xfhl64" isMarkerVisible="true">
+        <dc:Bounds x="425" y="305" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="415" y="281" width="70" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_16lvyrc_di" bpmnElement="Activity_16lvyrc">
@@ -155,6 +158,10 @@
         <di:waypoint x="450" y="355" />
         <di:waypoint x="450" y="440" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07m3w4e_di" bpmnElement="Flow_07m3w4e">
+        <di:waypoint x="500" y="480" />
+        <di:waypoint x="555" y="480" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_019da7n_di" bpmnElement="Flow_019da7n">
         <di:waypoint x="605" y="480" />
         <di:waypoint x="770" y="480" />
@@ -163,23 +170,19 @@
           <dc:Bounds x="646" y="462" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z71tbf_di" bpmnElement="Flow_0z71tbf">
+        <di:waypoint x="580" y="505" />
+        <di:waypoint x="580" y="610" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="553" y="554.5" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cx93uw_di" bpmnElement="Flow_0cx93uw">
         <di:waypoint x="530" y="650" />
         <di:waypoint x="450" y="650" />
         <di:waypoint x="450" y="520" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="426" y="616" width="47" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07m3w4e_di" bpmnElement="Flow_07m3w4e">
-        <di:waypoint x="500" y="480" />
-        <di:waypoint x="555" y="480" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0z71tbf_di" bpmnElement="Flow_0z71tbf">
-        <di:waypoint x="580" y="505" />
-        <di:waypoint x="580" y="610" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="553" y="554.5" width="84" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_036q5i1_di" bpmnElement="Flow_036q5i1">
