@@ -26,6 +26,7 @@
   <properties>
     <java.version>21</java.version>
     <camunda.version>8.9.13</camunda.version>
+    <httpclient5.version>5.6.1</httpclient5.version>
   </properties>
 
   <dependencyManagement>

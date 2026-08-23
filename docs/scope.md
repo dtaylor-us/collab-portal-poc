@@ -1,33 +1,24 @@
 # POC scope
 
-## In scope now
+## Implemented
 
-- Existing BPMN and forms
-- Runnable API shell
-- Runnable notification worker
-- Simulated reminder job
-- Local Camunda connectivity
-- Tests and documentation
+- Capability-specific REST API and application/domain boundaries
+- PostgreSQL persistence with Flyway, correction versioning, and dispositions
+- Camunda process startup and V2 user-task query/completion behind a workflow port
+- Application lifecycle validation with consistent HTTP errors
+- Persisted command idempotency and deterministic failure/retry experiment
+- Explicit notification retry/backoff and POC duplicate suppression
+- Read/list/history APIs, health endpoints, correlated logs
+- Authoritative BPMN/form startup deployment
+- Docker Compose local runtime and non-root multi-stage Java 21 images
 
-## Later POC increments
+## Intentionally out of scope
 
-- Domain persistence in a relational datastore
-- Domain-oriented API contracts
-- Starting a process from the API
-- Completing human tasks from a custom UI
-- Identity and authorization
-- Real notification integration
-- Intentional worker failures, retries, and incidents
-- Idempotency and cross-system recovery
+Portal UI, ADLS/ADF/Azure SQL, real email, Entra/enterprise identity, SUGAR, files/scanning, multiple TOs/constraints, complex authorization, Kafka/event streaming, production HA/Kubernetes, and production-grade reconciliation/provider idempotency remain excluded.
 
-## Out of scope
+## Known POC limits
 
-- ADLS replication
-- Production Azure deployment
-- Pearl Street integration
-- ADF integration
-- Multiple constraints or TOs
-- Cost estimates
-- Alternative mitigations
-- Large supporting files
-- Production identity federation
+- A workflow response lost after engine acceptance remains an uncertain outcome; command idempotency prevents duplicate database mutation but cannot prove exactly-once Camunda completion.
+- Notification duplicate protection is process-local and resets on worker restart.
+- Local Camunda uses file-backed H2 secondary storage. PostgreSQL is the collaboration application's store, not Camunda's store.
+- Compose is a developer topology, not a production deployment.

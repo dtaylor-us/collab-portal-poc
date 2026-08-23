@@ -12,3 +12,13 @@ camunda:
 
 notification:
   simulate-failure: ${NOTIFICATION_SIMULATE_FAILURE:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

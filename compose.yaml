@@ -1,0 +1,93 @@
+name: planning-portal-poc
+services:
+  camunda-data-init:
+    image: camunda/camunda:8.9.16
+    user: "0:0"
+    entrypoint: ["/bin/sh", "-c", "chown -R 1001:1001 /usr/local/camunda/camunda-data && chmod 775 /usr/local/camunda/camunda-data"]
+    volumes: [camunda-data:/usr/local/camunda/camunda-data]
+    restart: "no"
+
+  camunda:
+    image: camunda/camunda:8.9.16
+    ports: ["8088:8080", "26501:26500", "9601:9600"]
+    environment:
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0"
+      # POC-sized segment; the 8.9 unified image otherwise preallocates 1 GiB.
+      CAMUNDA_DATA_PRIMARYSTORAGE_LOGSTREAM_LOGSEGMENTSIZE: 128MB
+    mem_limit: 1g
+    volumes:
+      - camunda-engine-v2:/usr/local/camunda/data
+      - camunda-data:/usr/local/camunda/camunda-data
+      - ./configuration/application-h2.yaml:/usr/local/camunda/config/application.yaml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9600 && echo -e \"GET /actuator/health/status HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n\" >&3 && head -n 1 <&3'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+    depends_on:
+      camunda-data-init: {condition: service_completed_successfully}
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-dpp_collaboration}
+      POSTGRES_USER: ${DB_USERNAME:-dpp}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dpp-local}
+    ports: ["5432:5432"]
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  dpp-collaboration-api:
+    build:
+      context: .
+      dockerfile: services/dpp-collaboration-api/Dockerfile
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-dpp_collaboration}
+      DB_USERNAME: ${DB_USERNAME:-dpp}
+      DB_PASSWORD: ${DB_PASSWORD:-dpp-local}
+      CAMUNDA_REST_ADDRESS: http://camunda:8080
+      CAMUNDA_GRPC_ADDRESS: http://camunda:26500
+      CAMUNDA_AUTH_METHOD: none
+      WORKFLOW_SIMULATE_FAILURE: ${WORKFLOW_SIMULATE_FAILURE:-false}
+    ports: ["8081:8080"]
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health/readiness"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+    depends_on:
+      postgres: {condition: service_healthy}
+      camunda: {condition: service_healthy}
+
+  planning-notification-worker:
+    build:
+      context: .
+      dockerfile: workers/planning-notification-worker/Dockerfile
+    environment:
+      SERVER_PORT: 8080
+      CAMUNDA_REST_ADDRESS: http://camunda:8080
+      CAMUNDA_GRPC_ADDRESS: http://camunda:26500
+      CAMUNDA_AUTH_METHOD: none
+      NOTIFICATION_SIMULATE_FAILURE: ${NOTIFICATION_SIMULATE_FAILURE:-false}
+    ports: ["8082:8080"]
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health/readiness"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+    depends_on:
+      camunda: {condition: service_healthy}
+
+volumes:
+  camunda-engine-v2:
+  camunda-data:
+  postgres-data:

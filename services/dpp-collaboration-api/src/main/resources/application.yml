@@ -1,3 +1,34 @@
 spring:
   application:
     name: dpp-collaboration-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/dpp_collaboration}
+    username: ${DB_USERNAME:dpp}
+    password: ${DB_PASSWORD:dpp-local}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+camunda:
+  client:
+    mode: self-managed
+    rest-address: ${CAMUNDA_REST_ADDRESS:http://localhost:8080}
+    grpc-address: ${CAMUNDA_GRPC_ADDRESS:http://localhost:26500}
+    auth:
+      method: ${CAMUNDA_AUTH_METHOD:none}
+
+workflow:
+  simulate-failure: ${WORKFLOW_SIMULATE_FAILURE:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

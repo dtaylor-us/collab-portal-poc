@@ -1,0 +1,5 @@
+.git
+**/target
+portal-ui
+.idea
+.DS_Store
