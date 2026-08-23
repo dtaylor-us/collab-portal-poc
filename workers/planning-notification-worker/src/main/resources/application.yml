@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: planning-notification-worker
+
+camunda:
+  client:
+    mode: self-managed
+    rest-address: ${CAMUNDA_REST_ADDRESS:http://localhost:8080}
+    grpc-address: ${CAMUNDA_GRPC_ADDRESS:http://localhost:26500}
+    auth:
+      method: ${CAMUNDA_AUTH_METHOD:none}

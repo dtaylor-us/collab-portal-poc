@@ -1,0 +1,22 @@
+{
+  "components": [
+    {
+      "text": "## Revise the correction in the Planning Results Portal. Complete this task after the updated correction has been resubmitted.",
+      "type": "text",
+      "layout": {
+        "row": "Row_1w6jnb1",
+        "columns": null
+      },
+      "id": "Field_0wqwnep"
+    }
+  ],
+  "type": "default",
+  "id": "to-correction-rework",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.9.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.50.1"
+  },
+  "schemaVersion": 19
+}

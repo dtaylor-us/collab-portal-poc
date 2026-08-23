@@ -1,0 +1,46 @@
+{
+  "components": [
+    {
+      "text": "Review the published DPP result in the Planning Results Portal. Complete this task when your review is finished.",
+      "type": "text",
+      "layout": {
+        "row": "Row_02z2f0z",
+        "columns": null
+      },
+      "id": "Field_0ujs8pr"
+    },
+    {
+      "label": "Transmission Owner response",
+      "values": [
+        {
+          "label": "Accept the result",
+          "value": "ACCEPT"
+        },
+        {
+          "label": "Submit a correction",
+          "value": "CORRECTION"
+        }
+      ],
+      "type": "radio",
+      "layout": {
+        "row": "Row_18a5l26",
+        "columns": null
+      },
+      "id": "Field_0t3mafz",
+      "key": "toDecision",
+      "defaultValue": "ACCEPT",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "to-review",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.9.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.50.1"
+  },
+  "schemaVersion": 19
+}

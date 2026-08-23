@@ -1,0 +1,42 @@
+{
+  "components": [
+    {
+      "text": "## Review the Transmission Owner correction in the Planning Results Portal and record the MISO disposition.",
+      "type": "text",
+      "layout": {
+        "row": "Row_0y7va0n",
+        "columns": null
+      },
+      "id": "Field_0nyq1v0"
+    },
+    {
+      "label": "MISO disposition",
+      "values": [
+        {
+          "label": "Accept correction",
+          "value": "ACCEPT_CORRECTION"
+        },
+        {
+          "label": "Reject and return for rework",
+          "value": "REJECT_REWORK"
+        }
+      ],
+      "type": "radio",
+      "layout": {
+        "row": "Row_0038cwr",
+        "columns": null
+      },
+      "id": "Field_10mpk7l",
+      "key": "misoDecision"
+    }
+  ],
+  "type": "default",
+  "id": "miso-correction-review",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.9.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.50.1"
+  },
+  "schemaVersion": 19
+}
