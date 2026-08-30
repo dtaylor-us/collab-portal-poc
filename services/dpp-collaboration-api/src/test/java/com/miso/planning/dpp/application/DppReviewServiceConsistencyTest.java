@@ -18,7 +18,10 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.ResourcelessTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionTemplate;
 
 class DppReviewServiceConsistencyTest {
@@ -37,7 +40,7 @@ class DppReviewServiceConsistencyTest {
     workflow = new RecordingWorkflow();
     Clock clock = Clock.fixed(Instant.parse("2026-08-23T12:00:00Z"), ZoneOffset.UTC);
     service = new DppReviewService(reviews, history, workflow, ledger,
-        new TransactionTemplate(new ResourcelessTransactionManager()), clock);
+        new TransactionTemplate(new TestTransactionManager()), clock);
   }
 
   @Test
@@ -169,11 +172,18 @@ class DppReviewServiceConsistencyTest {
     @Override public long startReview(DppReview review) {
       startAttempts++;
       if (failNextStart) { failNextStart = false; throw new IllegalStateException("simulated workflow outage"); }
-      return 1000L + startAttempts;
+      return 1001L;
     }
     @Override public void completeTask(DppReview review, WorkflowTask task, Map<String, Object> routingVariables) {
       completionAttempts++;
       if (failNextCompletion) { failNextCompletion = false; throw new IllegalStateException("simulated workflow outage"); }
     }
+  }
+
+  private static final class TestTransactionManager extends AbstractPlatformTransactionManager {
+    @Override protected Object doGetTransaction() { return new Object(); }
+    @Override protected void doBegin(Object transaction, TransactionDefinition definition) {}
+    @Override protected void doCommit(DefaultTransactionStatus status) throws TransactionException {}
+    @Override protected void doRollback(DefaultTransactionStatus status) throws TransactionException {}
   }
 }
