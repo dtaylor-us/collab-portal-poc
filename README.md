@@ -1,6 +1,6 @@
 # Planning Results Portal / DPP Collaboration POC
 
-This increment is a runnable backend vertical slice for a long-running DPP result review. PostgreSQL is authoritative for collaboration records; Camunda 8.9 coordinates user tasks, routing, timers, retries, incidents, and the rework loop.
+This repository is a runnable vertical slice for long-running DPP result collaboration. The custom Planning Results Portal presents the business experience; PostgreSQL is authoritative for collaboration records; Camunda 8.9 coordinates human tasks, routing, timers, retries, incidents, and the rework loop.
 
 ## Run
 
@@ -13,6 +13,7 @@ docker compose up --build
 
 | Component | URL/port | Credentials |
 | --- | --- | --- |
+| Planning Results Portal | http://localhost:8090 | none |
 | Collaboration API | http://localhost:8081 | none |
 | Operate | http://localhost:8088/operate | demo / demo |
 | Tasklist | http://localhost:8088/tasklist | demo / demo |
@@ -22,7 +23,29 @@ docker compose up --build
 | Worker health | http://localhost:8082/actuator/health | none |
 | PostgreSQL | localhost:5432 | `.env` values |
 
-The API deploys the BPMN and three forms from the authoritative `workflows/` directory at startup. No Modeler deployment is required.
+The API deploys the BPMN and three forms from the authoritative `workflows/` directory at startup. No Modeler deployment is required. The Portal is served by nginx and proxies `/api/*` to the Collaboration API, keeping browser traffic on one origin.
+
+## Portal flow
+
+The Portal currently supports the full collaboration loop represented by the POC:
+
+1. A DPP review appears in the review queue.
+2. The Transmission Owner accepts the result or submits a correction.
+3. MISO accepts the correction or returns it for rework.
+4. The Transmission Owner revises and resubmits when rework is required.
+5. The Portal shows correction versions and MISO disposition history through completion.
+
+The UI generates an idempotency key for every mutation. If PostgreSQL commits but Camunda advancement fails and the API returns `502`, the open action retains the same key so the user can retry the exact command without duplicating business data.
+
+A clean database has no reviews. Seed a review through the API before opening the Portal:
+
+```shell
+curl -i -X POST http://localhost:8081/api/dpp-reviews \
+  -H 'Content-Type: application/json' -H 'Idempotency-Key: create-001' \
+  -d '{"dppResultId":"DPP-RESULT-001","transmissionOwnerId":"TO-DEMO"}'
+```
+
+Then open <http://localhost:8090> and perform the remaining review actions through the Portal.
 
 ## API smoke scenario
 
@@ -64,4 +87,10 @@ mvn clean verify
 docker compose config
 ```
 
-See [architecture](docs/architecture.md) and [scope](docs/scope.md).
+The cross-system recovery smoke test remains available as:
+
+```shell
+bash scripts/verify-consistency-recovery.sh
+```
+
+See [architecture](docs/architecture.md), [scope](docs/scope.md), and [Portal UI](portal-ui/README.md).

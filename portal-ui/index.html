@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#063b5b" />
+  <title>Planning Results Portal</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="utility-bar">
+      <div class="container utility-inner">
+        <span>Planning Collaboration</span>
+        <nav aria-label="Utility navigation">
+          <a href="http://localhost:8088/operate" target="_blank" rel="noreferrer">Operate</a>
+          <a href="http://localhost:8088/tasklist" target="_blank" rel="noreferrer">Tasklist</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="primary-header">
+      <div class="container header-inner">
+        <button class="brand" type="button" data-action="home" aria-label="Planning Results Portal home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="brand-text"><strong>MISO</strong><small>Planning Results Portal</small></span>
+        </button>
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <button class="nav-link active" type="button" data-view="queue">Reviews</button>
+          <button class="nav-link" type="button" data-view="about">About</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <p class="eyebrow">Resource Utilization · DPP Collaboration</p>
+          <h1>Planning Results Portal</h1>
+          <p class="hero-copy">Review DPP results, submit corrections, and track MISO dispositions in one place.</p>
+        </div>
+        <div class="hero-accent" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+    </section>
+
+    <section class="container workspace" id="queue-view">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow dark">Review workspace</p>
+          <h2>Open DPP reviews</h2>
+          <p class="section-copy">Focus on the reviews that need a decision or correction from your organization.</p>
+        </div>
+        <button class="button secondary" type="button" id="refresh-button">Refresh</button>
+      </div>
+
+      <div class="summary-grid" id="summary-grid" aria-label="Review summary"></div>
+
+      <div class="toolbar card">
+        <label class="search-field">
+          <span class="sr-only">Search reviews</span>
+          <input id="search-input" type="search" placeholder="Search by DPP result or transmission owner" autocomplete="off" />
+        </label>
+        <label>
+          <span class="sr-only">Filter by status</span>
+          <select id="status-filter">
+            <option value="ALL">All statuses</option>
+            <option value="PENDING_TO_REVIEW">TO review</option>
+            <option value="PENDING_MISO_REVIEW">MISO review</option>
+            <option value="REWORK_REQUIRED">Rework required</option>
+            <option value="COMPLETED">Completed</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+      <div id="review-list" class="review-list" aria-live="polite"></div>
+    </section>
+
+    <section class="container workspace hidden" id="detail-view" aria-labelledby="detail-title">
+      <button class="back-link" type="button" id="back-button">← Back to reviews</button>
+      <div id="review-detail"></div>
+    </section>
+
+    <section class="container workspace hidden" id="about-view">
+      <div class="content-card card">
+        <p class="eyebrow dark">About this POC</p>
+        <h2>One collaboration experience, separate systems of record</h2>
+        <p>The Planning Results Portal presents a business-focused experience over the DPP Collaboration API. PostgreSQL remains authoritative for review status, corrections, comments, and dispositions. Camunda coordinates long-running tasks, reminders, routing, retries, incidents, and rework.</p>
+        <div class="principle-grid">
+          <article><h3>Business record</h3><p>Review identity, collaboration history, and decisions stay in the application data model.</p></article>
+          <article><h3>Workflow</h3><p>Camunda manages durable human work and process coordination without becoming the business database.</p></article>
+          <article><h3>Recovery</h3><p>Idempotency keys allow safe retry when application state commits but workflow advancement fails.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="action-dialog" class="action-dialog">
+    <form method="dialog" id="action-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow dark" id="dialog-eyebrow">Review action</p>
+          <h2 id="dialog-title">Submit action</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close dialog">×</button>
+      </div>
+      <p id="dialog-description" class="section-copy"></p>
+      <label id="comment-field" class="form-field">
+        <span>Comment</span>
+        <textarea id="dialog-comment" rows="5" maxlength="2000"></textarea>
+        <small id="comment-help">Provide enough context for the next reviewer.</small>
+      </label>
+      <div class="dialog-actions">
+        <button class="button ghost" value="cancel" type="button" id="dialog-cancel">Cancel</button>
+        <button class="button primary" value="default" type="submit" id="dialog-submit">Submit</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div><strong>Planning Results Portal</strong><span>Prototype collaboration experience</span></div>
+      <span>Midcontinent Independent System Operator · POC</span>
+    </div>
+  </footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

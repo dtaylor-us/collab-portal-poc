@@ -66,6 +66,15 @@ services:
       postgres: {condition: service_healthy}
       camunda: {condition: service_healthy}
 
+  planning-results-portal:
+    build:
+      context: .
+      dockerfile: portal-ui/Dockerfile
+    ports: ["8090:8080"]
+    restart: on-failure
+    depends_on:
+      dpp-collaboration-api: {condition: service_healthy}
+
   planning-notification-worker:
     build:
       context: .
